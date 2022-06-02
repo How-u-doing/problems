@@ -27,7 +27,7 @@ int mydiv(int a, int d)
 stack<int> opter, oprnd;
 int p1 = 0, p2 = 0;
 
-void read_one_pair_braces(const char* data, int& i)
+void read_one_pair_parens(const char* data, int& i)
 {
     // (div (sub 42 (mul (add 1 2) (div -7 3))) (add 5 8))
     if (data[i+1] == 'a' && data[i+2] == 'd' && data[i+3] == 'd') {
@@ -46,7 +46,7 @@ void read_one_pair_braces(const char* data, int& i)
 
     // read p1
     if (data[i] == '(') {
-        read_one_pair_braces(data, i);
+        read_one_pair_parens(data, i);
     }
     else {
         int beg = i;
@@ -61,7 +61,7 @@ void read_one_pair_braces(const char* data, int& i)
 
     // read p2
     if (data[i] == '(') {
-        read_one_pair_braces(data, i);
+        read_one_pair_parens(data, i);
     }
     else {
         int beg = i;
@@ -101,7 +101,7 @@ int main()
         const char* data = buf.data();
         int i = 0;
         try {
-            read_one_pair_braces(data, i);
+            read_one_pair_parens(data, i);
             cout << oprnd.top() << '\n';
             oprnd.pop();
         }
