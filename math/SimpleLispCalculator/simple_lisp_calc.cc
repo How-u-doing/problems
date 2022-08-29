@@ -19,6 +19,47 @@ int mydiv(int a, int d)
     return ret;
 }
 
+int evaluate(const string& expr)
+{
+    stack<string> ops;
+    stack<int> vals;
+    for (size_t i = 0; i < expr.size(); ) {
+        if (expr[i] == ' ') {
+            ++i;
+        }
+        else if (expr[i] == '(') {
+            // skip whitespace after (
+            while (expr[++i] == ' ');
+            ops.push(expr.substr(i, 3));
+            i += 3;  // skip the operator, e.g. "add"
+        }
+        else if (expr[i] == ')') {
+            int p2 = vals.top(); vals.pop();
+            int p1 = vals.top(); vals.pop();
+            if (ops.top() == "add")
+                vals.push(p1 + p2);
+            else if (ops.top() == "sub")
+                vals.push(p1 - p2);
+            else if (ops.top() == "mul")
+                vals.push(p1 * p2);
+            else if (ops.top() == "div")
+                vals.push(mydiv(p1, p2));
+            else
+                throw std::runtime_error("invalid operator");
+            ops.pop();
+            ++i;
+        }
+        else { // operands
+            size_t beg = i;
+            while (expr[i] != ' ' && expr[i] != ')')
+                ++i;
+            string v = expr.substr(beg, i - beg);
+            vals.push(stoi(v));
+        }
+    }
+    return vals.top();
+}
+
 #define OP_ADD 0
 #define OP_SUB 1
 #define OP_MUL 2
@@ -98,12 +139,16 @@ int main()
 {
     string buf;
     while (getline(cin, buf)) {
-        const char* data = buf.data();
-        int i = 0;
         try {
+#if USE_RECURSION
+            const char* data = buf.data();
+            int i = 0;
             read_one_pair_parens(data, i);
             cout << oprnd.top() << '\n';
             oprnd.pop();
+#else
+            cout << evaluate(buf) << '\n';
+#endif
         }
         catch (const std::exception& e) {
             cerr << e.what() << endl;

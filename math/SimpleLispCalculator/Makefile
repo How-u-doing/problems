@@ -6,7 +6,7 @@ CXXFLAGS := -std=c++17 -Wall -Wextra
 calc := simple_lisp_calc
 
 simple_lisp_calc: simple_lisp_calc.cc
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) -g -o $@ $^
 
 clean:
 	rm -f $(calc)
